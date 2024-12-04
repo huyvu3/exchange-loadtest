@@ -10,11 +10,11 @@ export let options = {
     scenarios: {
         constant_request_rate: {// Scenario name
             executor: 'constant-arrival-rate', // Executor type, in this case 'constant-arrival-rate'
-            rate: 100,       // Number of requests per second
+            rate: 4000,       // Number of requests per second
             timeUnit: '1s', // Rate unit, in this case requests per second
-            duration: '60s', // Total duration of the test, in this case 1 minute
-            preAllocatedVUs: 800, // Number of pre-allocated virtual users
-            maxVUs: 1200 // Maximum number of virtual users
+            duration: '900s', // Total duration of the test, in this case 1 minute
+            preAllocatedVUs: 1000, // Number of pre-allocated virtual users
+            maxVUs: 4000 // Maximum number of virtual users
         },
     },
 };
