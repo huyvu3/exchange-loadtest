@@ -1,87 +1,67 @@
-import { SharedArray } from 'k6/data';
-import http from 'k6/http';
 import { check } from "k6";
-
-const URL = 'https://dev-gateway.exchange.sotatek.works/api/v1'
-
-export let options = {
-    scenarios: {
-        constant_request_rate: { // Scenario name
-            executor: 'constant-arrival-rate', // Executor type, in this case 'constant-arrival-rate'
-            rate: 4000, // Number of requests per second
-            timeUnit: '1s', // Rate unit, in this case requests per second
-            duration: '900s', // Total duration of the test, in this case 1 minute
-            preAllocatedVUs: 1000, // Number of pre-allocated virtual users
-            maxVUs: 4000 // Maximum number of virtual users
-        },
-    },
-};
+import http from "k6/http";
+import { SharedArray } from 'k6/data';
 
 const tokens = new SharedArray('getTokens', function() {
     return JSON.parse(open('./tokens.json'));
 });
 
-const generatePrice = (min, max) => Number((Math.random() * (max - min) + min).toFixed(2));
-
-const generateQuantity = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
-
-
-const generateOrder = (totalOrders = 4000, symbols = ['btc'], priceRanges = {
-    'btc': [95000, 100000],
-}) => {
-    const coin = symbols[Math.floor(Math.random() * symbols.length)];
-    const [minPrice, maxPrice] = priceRanges[coin];
-
-    const price = generatePrice(minPrice, maxPrice);
-    const quantity = generateQuantity(1, 20);
-    const total = (price * quantity).toFixed(2);
-    const currency = 'usdt'
-
-
-    //market
-    // {
-    //     "trade_type": "sell",
-    //     "type": "market",
-    //     "quantity": "1000",
-    //     "currency": "usdt",
-    //     "coin": "btc",
-    //     "balance": "9999998056.525325",
-    //     "market_type": "spot",
-    //     "marketType": "spot",
-    //     "tradeType": "sell",
-    //     "lang": "en"
-    // }
-
-    const tradeType = Math.random() > 0.5 ? 'buy' : 'sell'
-    return {
-        trade_type: tradeType,
-        type: 'limit',
-        quantity: quantity.toString(),
-        price: price.toString(),
-        total: total,
-        currency,
-        coin: coin.toUpperCase(),
-        balance: 9999999999999999,
-        market_type: 'spot',
-        marketType: 'spot',
-        tradeType: tradeType,
-        lang: 'en'
-    }
+export let options = {
+    scenarios: {
+        constant_request_rate: {// Scenario name
+            executor: 'constant-arrival-rate', // Executor type, in this case 'constant-arrival-rate'
+            rate: 100,       // Number of requests per second
+            timeUnit: '1s', // Rate unit, in this case requests per second
+            duration: '60s', // Total duration of the test, in this case 1 minute
+            preAllocatedVUs: 800, // Number of pre-allocated virtual users
+            maxVUs: 1200 // Maximum number of virtual users
+        },
+    },
 };
 
 
-export default function() {
+
+
+export default function () {
     const token = tokens[Math.floor(Math.random() * tokens.length)];
-    const order = generateOrder();
+    const tradeType = Math.random() > 0.5 ? 'buy' : 'sell'
+    const price = Number((Math.random() * (100000 - 95000) + 95000).toFixed(2))
+    const quantity = Math.floor(Math.random() * (20 - 1 + 1) + 1);
+    const total = (price * quantity).toFixed(2);
 
-    console.log(order)
-    console.log(token)
+    console.log({
+        coin: "btc",
+        currency: "usdt",
+        quantity: quantity,
+        tradeType: tradeType,
+        type: "limit",
+        total: total,
+        price: price,
+        marketType: "spot",
+    })
 
-    let res = http.post(`${URL}/spot-order`, JSON.stringify(order), {
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-        }
+    let res = http.post(
+        "https://dev-gateway.exchange.sotatek.works/api/v1/spot-order",
+        JSON.stringify({
+            coin: "btc",
+            currency: "usdt",
+            quantity: quantity,
+            tradeType: tradeType,
+            type: "limit",
+            total: total,
+            price: price,
+            marketType: "spot",
+        }),
+        {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            }
+        },
+    );
+
+
+    check(res, {
+        "is status 200": (r) => r.status === 201,
     });
-    check(res, { "status was 201": (r) => r.status === 201 });
 }
