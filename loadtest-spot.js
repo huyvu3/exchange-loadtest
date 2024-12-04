@@ -25,8 +25,8 @@ export let options = {
 export default function () {
     const token = tokens[Math.floor(Math.random() * tokens.length)];
     const tradeType = Math.random() > 0.5 ? 'buy' : 'sell'
-    const price = Number((Math.random() * (100000 - 95000) + 95000).toFixed(2))
-    const quantity = Math.floor(Math.random() * (20 - 1 + 1) + 1);
+    const price = Number((Math.random() * (98000 - 95000) + 95000).toFixed(2))
+    const quantity = Math.random() * (0.4 - 0.0001) + 0.0001;
     const total = (price * quantity).toFixed(2);
 
     console.log({
@@ -62,6 +62,6 @@ export default function () {
 
 
     check(res, {
-        "is status 200": (r) => r.status === 201,
+        "is status 201": (r) => r.status === 201,
     });
 }
