@@ -29,58 +29,50 @@ const generateQuantity = (min, max) => Math.floor(Math.random() * (max - min + 1
 const generateOrder = (totalOrders = 4000, symbols = ['btc'], priceRanges = {
     'btc': [95000, 100000],
 }) => {
-    let orders = [];
+    const coin = symbols[Math.floor(Math.random() * symbols.length)];
+    const [minPrice, maxPrice] = priceRanges[coin];
 
-    for (let i = 0; i < totalOrders; i++) {
-        const coin = symbols[Math.floor(Math.random() * symbols.length)];
-        const [minPrice, maxPrice] = priceRanges[coin];
-
-        const price = generatePrice(minPrice, maxPrice);
-        const quantity = generateQuantity(1, 20);
-        const total = (price * quantity).toFixed(2);
-        const currency = 'usdt'
+    const price = generatePrice(minPrice, maxPrice);
+    const quantity = generateQuantity(1, 20);
+    const total = (price * quantity).toFixed(2);
+    const currency = 'usdt'
 
 
-        //market
-        // {
-        //     "trade_type": "sell",
-        //     "type": "market",
-        //     "quantity": "1000",
-        //     "currency": "usdt",
-        //     "coin": "btc",
-        //     "balance": "9999998056.525325",
-        //     "market_type": "spot",
-        //     "marketType": "spot",
-        //     "tradeType": "sell",
-        //     "lang": "en"
-        // }
+    //market
+    // {
+    //     "trade_type": "sell",
+    //     "type": "market",
+    //     "quantity": "1000",
+    //     "currency": "usdt",
+    //     "coin": "btc",
+    //     "balance": "9999998056.525325",
+    //     "market_type": "spot",
+    //     "marketType": "spot",
+    //     "tradeType": "sell",
+    //     "lang": "en"
+    // }
 
-        const tradeType = Math.random() > 0.5 ? 'buy' : 'sell'
-
-        orders.push({
-            trade_type: tradeType,
-            type: 'limit',
-            quantity: quantity.toString(),
-            price: price.toString(),
-            total: total,
-            currency,
-            coin: coin.toUpperCase(),
-            balance: 9999999999999999,
-            market_type: 'spot',
-            marketType: 'spot',
-            tradeType: tradeType,
-            lang: 'en'
-        });
+    const tradeType = Math.random() > 0.5 ? 'buy' : 'sell'
+    return {
+        trade_type: tradeType,
+        type: 'limit',
+        quantity: quantity.toString(),
+        price: price.toString(),
+        total: total,
+        currency,
+        coin: coin.toUpperCase(),
+        balance: 9999999999999999,
+        market_type: 'spot',
+        marketType: 'spot',
+        tradeType: tradeType,
+        lang: 'en'
     }
-
-    return orders;
 };
 
 
 export default function() {
     const token = tokens[Math.floor(Math.random() * tokens.length)];
-    const genOrder = generateOrder();
-    const order = genOrder[Math.floor(Math.random() * genOrder.length)];
+    const order = generateOrder();
 
     console.log(order)
     console.log(token)
