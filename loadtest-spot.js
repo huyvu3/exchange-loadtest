@@ -2,49 +2,32 @@ import { SharedArray } from 'k6/data';
 import http from 'k6/http';
 import { check } from "k6";
 
-export const options = {
-    // thresholds: {
-    //     http_req_failed: ['rate<0.01'], // http errors should be less than 1%
-    //     http_req_duration: ['p(95)<2000'], // 95% of requests should be below 200ms
-    // },
-    // stages: [
-    //     { duration: '1s', target: 4000 },  // 4000 requests per second over 1 second
-    // ],
-    vus: 10000, // Number of virtual users to start with
-    duration: '60s'
+const URL = 'https://dev-gateway.exchange.sotatek.works/api/v1'
+
+export let options = {
+    scenarios: {
+        constant_request_rate: { // Scenario name
+            executor: 'constant-arrival-rate', // Executor type, in this case 'constant-arrival-rate'
+            rate: 1, // Number of requests per second
+            timeUnit: '1s', // Rate unit, in this case requests per second
+            duration: '60s', // Total duration of the test, in this case 1 minute
+            preAllocatedVUs: 800, // Number of pre-allocated virtual users
+            maxVUs: 1200 // Maximum number of virtual users
+        },
+    },
 };
 
 const tokens = new SharedArray('getTokens', function() {
     return JSON.parse(open('./tokens.json'));
 });
 
-const URL = 'https://dev-gateway.exchange.sotatek.works/api/v1'
-
-
-
 const generatePrice = (min, max) => Number((Math.random() * (max - min) + min).toFixed(2));
 
 const generateQuantity = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
-const getAvailableBalance = (accessTokenUser, currency) => {
-    let res = http.get(`${URL}/balances`, {
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessTokenUser}`,
-        }
-    });
-    check(res, { 'status was 200': (r) => r.status === 200 });
-    if (res.status === 200) {
-        const balanceData = res.json();
-        if (balanceData.main && balanceData.main[currency]) {
-            return balanceData.main[currency].available_balance;
-        }
-    }
 
-}
-
-const generateOrder = (accessTokenUser, totalOrders = 100000, symbols = ['btc'], priceRanges = {
-    'btc': [90000, 100000],
+const generateOrder = (totalOrders = 100000, symbols = ['btc'], priceRanges = {
+    'btc': [95000, 100000],
 }) => {
     let orders = [];
 
@@ -56,7 +39,7 @@ const generateOrder = (accessTokenUser, totalOrders = 100000, symbols = ['btc'],
         const quantity = generateQuantity(1, 20);
         const total = (price * quantity).toFixed(2);
         const currency = 'usdt'
-            // const balance = getAvailableBalance(accessTokenUser, currency)
+
 
         //market
         // {
@@ -96,11 +79,11 @@ const generateOrder = (accessTokenUser, totalOrders = 100000, symbols = ['btc'],
 
 export default function() {
     const token = tokens[Math.floor(Math.random() * tokens.length)];
-
-    const genOrder = generateOrder(token);
+    const genOrder = generateOrder();
     const order = genOrder[Math.floor(Math.random() * genOrder.length)];
 
     console.log(order)
+    console.log(token)
 
     let res = http.post(`${URL}/spot-order`, JSON.stringify(order), {
         headers: {

@@ -30,9 +30,9 @@ var options = {
   // stages: [
   //     { duration: '1s', target: 4000 },  // 4000 requests per second over 1 second
   // ],
-  vus: 10000,
+  vus: 20,
   // Number of virtual users to start with
-  duration: '60s'
+  duration: '30s'
 };
 exports.options = options;
 var tokens = new _data.SharedArray('getTokens', function () {
@@ -46,36 +46,28 @@ var generatePrice = function generatePrice(min, max) {
 
 var generateQuantity = function generateQuantity(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
-};
+}; // const getAvailableBalance = (accessTokenUser, currency) => {
+//     let res = http.get(`${URL}/balances`, {
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": `Bearer ${accessTokenUser}`,
+//         }
+//     });
+//     check(res, { 'status was 200': (r) => r.status === 200 });
+//     if (res.status === 200) {
+//         const balanceData = res.json();
+//         if (balanceData.main && balanceData.main[currency]) {
+//             return balanceData.main[currency].available_balance;
+//         }
+//     }
+// }
 
-var getAvailableBalance = function getAvailableBalance(accessTokenUser, currency) {
-  var res = _http["default"].get("".concat(URL, "/balances"), {
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer ".concat(accessTokenUser)
-    }
-  });
 
-  (0, _k.check)(res, {
-    'status was 200': function statusWas200(r) {
-      return r.status === 200;
-    }
-  });
-
-  if (res.status === 200) {
-    var balanceData = res.json();
-
-    if (balanceData.main && balanceData.main[currency]) {
-      return balanceData.main[currency].available_balance;
-    }
-  }
-};
-
-var generateOrder = function generateOrder(accessTokenUser) {
-  var totalOrders = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 100000;
-  var symbols = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ['btc'];
-  var priceRanges = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {
-    'btc': [90000, 100000]
+var generateOrder = function generateOrder() {
+  var totalOrders = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 100000;
+  var symbols = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ['btc'];
+  var priceRanges = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
+    'btc': [95000, 100000]
   };
   var orders = [];
 
@@ -126,14 +118,15 @@ var generateOrder = function generateOrder(accessTokenUser) {
 
 function _default() {
   var token = tokens[Math.floor(Math.random() * tokens.length)];
-  var genOrder = generateOrder(token);
+  var genOrder = generateOrder();
   var order = genOrder[Math.floor(Math.random() * genOrder.length)];
   console.log(order);
+  console.log(token);
 
   var res = _http["default"].post("".concat(URL, "/spot-order"), JSON.stringify(order), {
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer ".concat(token)
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiZW1haWwiOiJodXkudnUzQHNvdGF0ZWsuY29tIiwic3RhdHVzIjoiYWN0aXZlIiwiaWF0IjoxNzMzMjEzOTg0LCJleHAiOjE3MzMyMTc1ODR9.9XgobxT9UfC4fYzuhRJoQZPZoV3dfwbB1X1CxllappU"
     }
   });
 

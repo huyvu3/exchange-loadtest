@@ -1,21 +1,21 @@
 const axios = require('axios');
 const fs = require('fs');
-const {get} = require("axios");
+const { get } = require("axios");
 
-const url = "https://dev-gateway.m-exchange.sotatek.works/api/v1/oauth/token"
-const BOT_COUNTS = 10;
+const url = "https://dev-gateway.exchange.sotatek.works/api/v1/oauth/token"
+const BOT_COUNTS = 100;
 const TOKENS = [];
 
-const login = async () => {
+const login = async() => {
     const loginPromises = Array.from({ length: BOT_COUNTS }, (_, i) => {
         const payload = {
-            "username": `account${i + 1}@sotatek.com`,
+            "username": `bot_${i+1}@sotatek.com`,
             "password": "Test@12345",
             "lang": "string",
             "otp": "string",
             "client_id": "string"
         };
-
+        console.log(payload)
 
         return axios.post(url, payload, {
             headers: {
@@ -26,7 +26,7 @@ const login = async () => {
     });
 
     const responses = await Promise.all(loginPromises);
-     responses.map(response =>
+    responses.map(response =>
         TOKENS.push(response.data.access_token)
     );
 
