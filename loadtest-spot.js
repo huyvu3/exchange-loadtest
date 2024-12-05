@@ -26,7 +26,7 @@ export default function () {
     const token = tokens[Math.floor(Math.random() * tokens.length)];
     const tradeType = Math.random() > 0.5 ? 'buy' : 'sell'
     const price = Number((Math.random() * (98000 - 95000) + 95000).toFixed(2))
-    const quantity = Math.random() * (0.3 - 0.001) + 0.001;
+    const quantity = Math.random() * (0.2 - 0.001) + 0.001;
     const total = (price * quantity).toFixed(2);
 
     console.log({

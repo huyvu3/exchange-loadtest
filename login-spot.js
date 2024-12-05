@@ -9,7 +9,7 @@ const TOKENS = [];
 const login = async() => {
     const loginPromises = Array.from({ length: BOT_COUNTS }, (_, i) => {
         const payload = {
-            "username": `bot_${i+2}@sotatek.com`,
+            "username": `bot_${i+103}@sotatek.com`,
             "password": "Test@12345",
             "lang": "string",
             "otp": "string",
