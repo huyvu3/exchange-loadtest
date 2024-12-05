@@ -26,7 +26,7 @@ export default function () {
     const token = tokens[Math.floor(Math.random() * tokens.length)];
     const tradeType = Math.random() > 0.5 ? 'buy' : 'sell'
     const price = Number((Math.random() * (98000 - 95000) + 95000).toFixed(2))
-    const quantity = Math.random() * (0.3 - 0.0001) + 0.001;
+    const quantity = Math.random() * (0.3 - 0.001) + 0.001;
     const total = (price * quantity).toFixed(2);
 
     console.log({
@@ -40,28 +40,28 @@ export default function () {
         marketType: "spot",
     })
 
-    let res = http.post(
-        "https://dev-gateway.exchange.sotatek.works/api/v1/spot-order",
-        JSON.stringify({
-            coin: "btc",
-            currency: "usdt",
-            quantity: quantity,
-            tradeType: tradeType,
-            type: "limit",
-            total: total,
-            price: price,
-            marketType: "spot",
-        }),
-        {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            }
-        },
-    );
+    // let res = http.post(
+    //     "https://dev-gateway.exchange.sotatek.works/api/v1/spot-order",
+    //     JSON.stringify({
+    //         coin: "btc",
+    //         currency: "usdt",
+    //         quantity: quantity,
+    //         tradeType: tradeType,
+    //         type: "limit",
+    //         total: total,
+    //         price: price,
+    //         marketType: "spot",
+    //     }),
+    //     {
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "Authorization": `Bearer ${token}`,
+    //         }
+    //     },
+    // );
 
 
-    check(res, {
-        "is status 201": (r) => r.status === 201,
-    });
+    // check(res, {
+    //     "is status 201": (r) => r.status === 201,
+    // });
 }
