@@ -10,11 +10,11 @@ export let options = {
     scenarios: {
         constant_request_rate: {// Scenario name
             executor: 'constant-arrival-rate', // Executor type, in this case 'constant-arrival-rate'
-            rate: 40,       // Number of requests per second
+            rate: 4000,       // Number of requests per second
             timeUnit: '1s', // Rate unit, in this case requests per second
-            duration: '900s', // Total duration of the test, in this case 1 minute
-            preAllocatedVUs: 10, // Number of pre-allocated virtual users
-            maxVUs: 40 // Maximum number of virtual users
+            duration: '300s', // Total duration of the test, in this case 5 minute
+            preAllocatedVUs: 1000, // Number of pre-allocated virtual users
+            maxVUs: 4000 // Maximum number of virtual users
         },
     },
 };
@@ -62,6 +62,11 @@ export default function () {
 
 
     check(res, {
-        "is status 201": (r) => r.status === 201,
+        "is status 201": (r) => {
+            if(r.status !== 201) {
+                console.log("===========================error", r.status)
+            }
+            return r.status === 201
+        },
     });
 }
