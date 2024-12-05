@@ -39,29 +39,29 @@ export default function () {
         price: price,
         marketType: "spot",
     })
-    //
-    // let res = http.post(
-    //     "https://dev-gateway.exchange.sotatek.works/api/v1/spot-order",
-    //     JSON.stringify({
-    //         coin: "btc",
-    //         currency: "usdt",
-    //         quantity: quantity,
-    //         tradeType: tradeType,
-    //         type: "limit",
-    //         total: total,
-    //         price: price,
-    //         marketType: "spot",
-    //     }),
-    //     {
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Authorization": `Bearer ${token}`,
-    //         }
-    //     },
-    // );
-    //
-    //
-    // check(res, {
-    //     "is status 201": (r) => r.status === 201,
-    // });
+
+    let res = http.post(
+        "https://dev-gateway.exchange.sotatek.works/api/v1/spot-order",
+        JSON.stringify({
+            coin: "btc",
+            currency: "usdt",
+            quantity: quantity,
+            tradeType: tradeType,
+            type: "limit",
+            total: total,
+            price: price,
+            marketType: "spot",
+        }),
+        {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            }
+        },
+    );
+
+
+    check(res, {
+        "is status 201": (r) => r.status === 201,
+    });
 }
