@@ -71,19 +71,19 @@ export default function () {
 
     console.log(requestBid)
 
-    // let res = http.post(
-    //     "https://dev-gateway.exchange.sotatek.works/api/v1/spot-order",
-    //     JSON.stringify(requestBid),
-    //     headers
-    // );
-    //
-    //
-    // check(res, {
-    //     "is status 201": (r) => {
-    //         if(r.status !== 201) {
-    //             console.log("===========================error", r.status)
-    //         }
-    //         return r.status === 201
-    //     },
-    // });
+    let res = http.post(
+        "https://dev-gateway.exchange.sotatek.works/api/v1/spot-order",
+        JSON.stringify(requestBid),
+        headers
+    );
+
+
+    check(res, {
+        "is status 201": (r) => {
+            if(r.status !== 201) {
+                console.log("===========================error", r.status)
+            }
+            return r.status === 201
+        },
+    });
 }
