@@ -4,7 +4,7 @@ import { check } from "k6";
 
 const ENDPOINT = 'https://dev-gateway.exchange.sotatek.works/api/v1/spot-order';
 
-const MARK_PRICE = '98404.76';
+const MARK_PRICE = '99320';
 const TOKENS = new SharedArray('getTokens', function () {
     const f = JSON.parse(open('./tokens.json'));
     return f; // f must be an array
@@ -49,7 +49,7 @@ export default function () {
     const token = getRandomToken(TOKENS);
     const url = ENDPOINT + '/order';
     const bearerToken = `Bearer ${token}`;
-    const price =  99113
+    const price =  randomPrice()
     const quantity = randomQuantity()
 
     const headers = {
