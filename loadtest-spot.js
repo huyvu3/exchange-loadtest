@@ -4,7 +4,7 @@ import { check } from "k6";
 
 const ENDPOINT = 'https://dev-gateway.exchange.sotatek.works/api/v1/spot-order';
 
-const MARK_PRICE = '99320';
+const MARK_PRICE = '96553';
 const TOKENS = new SharedArray('getTokens', function () {
     const f = JSON.parse(open('./tokens.json'));
     return f; // f must be an array
